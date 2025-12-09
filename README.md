@@ -1,2 +1,15 @@
 # easy-diagrams
-Source code of easydiagrams.com
+
+Source code for easydiagrams.com - a non-profit educational website dedicated to visualizing fundamental concepts through diagrams and videos.
+
+## Purpose
+
+This site hosts high-quality diagrams and educational content covering:
+
+- Fundamental human thinking methods
+- Core principles of logic
+- Interesting mathematical concepts
+- Physics thinking approaches
+- Computer science fundamentals
+- Artificial intelligence principles
+- And more...
