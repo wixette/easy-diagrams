@@ -13,3 +13,7 @@ This site hosts high-quality diagrams and educational content covering:
 - Computer science fundamentals
 - Artificial intelligence principles
 - And more...
+
+## Usage
+
+See [USAGE.md](USAGE.md) for instructions on how to dev, build and deploy the website.
