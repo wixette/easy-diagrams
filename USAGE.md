@@ -160,69 +160,143 @@ export const ui = {
 }
 ```
 
-## Features
+## Adding a New Language
 
-### Content Collections
+To add a new language (e.g., French `fr` or Spanish `es`) to the entire site:
 
-- Type-safe content with Zod schema validation
-- Automatic frontmatter validation
-- Easy to query and filter
+### Step 1: Update Astro Configuration
 
-### Tag-Based Organization
+Edit `astro.config.mjs`:
 
-- Automatic tag pages generation
-- Tag cloud on `/tags` page
-- Filter posts by tag
+```javascript
+i18n: {
+  defaultLocale: 'en',
+  locales: ['en', 'zh', 'ja', 'fr'],  // Add 'fr' here
+  routing: {
+    prefixDefaultLocale: false,
+  },
+}
+```
 
-### Language Switching
+### Step 2: Add Language Metadata
 
-- **Single smart switcher**: Located in top navigation bar
-- **Context-aware**:
-  - On homepage: switches site language (`/`, `/zh/`, `/ja/`)
-  - On post page: switches post version (`/posts/en/slug`, `/posts/zh/slug`)
-- **Visual feedback**: Unavailable translations are grayed out and non-clickable
-- **Per-post availability**: Only posts with translations show active language buttons
-- **Clean URLs**:
-  - Pages: No prefix for English, `/zh/` for Chinese, `/ja/` for Japanese
-  - Posts: `/posts/en/slug`, `/posts/zh/slug`, `/posts/ja/slug`
+Edit `src/utils/i18n.ts`:
 
-### Featured Posts
+**Add to languages object:**
+```typescript
+export const languages = {
+  en: 'English',
+  zh: '中文',
+  ja: '日本語',
+  fr: 'Français',  // Add this
+} as const;
+```
 
-Set `featured: true` in frontmatter to highlight posts on the home page
+**Add UI translations:**
+```typescript
+export const ui = {
+  // ... existing en, zh, ja ...
+  fr: {  // Add complete French translations
+    'nav.home': 'Accueil',
+    'nav.posts': 'Articles',
+    'nav.tags': 'Étiquettes',
+    'post.tags': 'Étiquettes',
+    'post.published': 'Publié le',
+    'post.updated': 'Mis à jour le',
+    'language.switch': 'Changer de langue',
+    'home.tagline': 'Visualiser les concepts fondamentaux...',
+    'home.description': 'Explorez du contenu éducatif...',
+    'home.browsePosts': 'Parcourir les articles',
+    'home.exploreTags': 'Explorer par étiquettes',
+    'home.featured': 'Articles en vedette',
+    'home.recent': 'Articles récents',
+    'home.viewAll': 'Voir tous les articles',
+  },
+} as const;
+```
 
-## Tips
+### Step 3: Create Language-Specific Pages
 
-1. **Use consistent frontmatter**: Follow the schema in `src/content/config.ts`
-2. **Optimize images**: Compress images before adding to `public/images/`
-3. **Write descriptive titles and descriptions**: Good for SEO
-4. **Use meaningful tags**: Helps users discover related content
-5. **Keep language versions in sync**: Update all versions when changing content
+Create homepage: `src/pages/fr/index.astro`
+
+```astro
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../utils/i18n';
+
+const lang = Astro.currentLocale || 'fr';
+const t = useTranslations(lang);
+
+const allPosts = await getCollection('posts', ({ slug }) => {
+  return slug.startsWith(`${lang}/`);
+});
+
+// Get featured and recent posts
+const featuredPosts = allPosts
+  .filter((post) => post.data.featured)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const recentPosts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 6);
+---
+
+<BaseLayout title="Accueil" description="..." lang={lang}>
+  <!-- Copy structure from existing homepage -->
+</BaseLayout>
+```
+
+### Step 4: Create Content Folder
+
+Create the posts directory:
+```bash
+mkdir src/content/posts/fr
+```
+
+### Step 5: Add Content
+
+Create posts in `src/content/posts/fr/`:
+
+```markdown
+---
+title: 'Votre titre en français'
+description: 'Description de votre article'
+pubDate: 2025-01-15
+tags: ['Science Informatique', 'IA']
+featured: false
+---
+
+# Contenu en français
+
+Votre contenu ici...
+```
+
+### Step 6: Test
+
+```bash
+npm run dev
+```
+
+Visit:
+- `/fr` - French homepage
+- `/fr/posts` - (if created)
+- Language switcher should now show "Français" option
+
+### Summary Checklist
+
+- [ ] Add locale to `astro.config.mjs`
+- [ ] Add language name to `src/utils/i18n.ts` → `languages`
+- [ ] Add complete UI translations to `src/utils/i18n.ts` → `ui`
+- [ ] Create `src/pages/{lang}/index.astro`
+- [ ] Create `src/content/posts/{lang}/` folder
+- [ ] (Optional) Create localized `/posts` and `/tags` pages
+- [ ] Test all pages and language switching
 
 ## Publishing Workflow
 
-1. Add/edit markdown files in `src/content/posts/`
+1. Add/edit markdown files in `src/content/posts/{lang}/`
 2. Test locally with `npm run dev`
 3. Build for production: `npm run build`
 4. Deploy the `dist/` folder to your hosting service
-
-## Troubleshooting
-
-### Build Errors
-
-- Check frontmatter matches the schema in `src/content/config.ts`
-- Ensure dates are in valid format: `YYYY-MM-DD`
-- Verify all referenced images exist in `public/`
-
-### Language Switching Not Working
-
-- Ensure all language versions have the same base filename in their respective folders
-- Verify files are in correct language folders (`en/`, `zh/`, `ja/`)
-- Check that folder names match supported locales in `astro.config.mjs`
-- For unavailable languages, buttons should appear grayed out (this is expected behavior)
-
-### Posts Not Appearing
-
-- Check that files are in correct language folder: `src/content/posts/en/`, `src/content/posts/zh/`, etc.
-- Verify frontmatter is valid YAML
-- Ensure `pubDate` is set correctly
-- Make sure the language folder (`en/`, `zh/`, `ja/`) matches the page language you're viewing
