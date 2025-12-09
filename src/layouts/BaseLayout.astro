@@ -1,0 +1,207 @@
+---
+import { languages, useTranslations, type Language } from '../utils/i18n';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+  // For post pages: which languages have translations
+  availableLanguages?: Language[];
+  // For post pages: the base slug to construct URLs
+  postSlug?: string;
+}
+
+const {
+  title,
+  description,
+  lang = 'en',
+  availableLanguages,
+  postSlug,
+} = Astro.props;
+
+const pageTitle = `${title} | EasyDiagrams`;
+const currentLocale = (Astro.currentLocale || 'en') as Language;
+const t = useTranslations(currentLocale);
+
+// Get pathname without locale prefix for language switching
+const getPathWithoutLocale = (pathname: string, locale: string) => {
+  if (locale === 'en') return pathname;
+  const localePrefix = `/${locale}`;
+  return pathname.startsWith(localePrefix)
+    ? pathname.slice(localePrefix.length) || '/'
+    : pathname;
+};
+
+const pathWithoutLocale = getPathWithoutLocale(Astro.url.pathname, currentLocale);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    {description && <meta name="description" content={description} />}
+    <title>{pageTitle}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href={getRelativeLocaleUrl(currentLocale, '/')} class="logo">EasyDiagrams</a>
+        <div class="nav-links">
+          <a href={getRelativeLocaleUrl(currentLocale, '/')}>{t('nav.home')}</a>
+          <a href={getRelativeLocaleUrl(currentLocale, '/posts')}>{t('nav.posts')}</a>
+          <a href={getRelativeLocaleUrl(currentLocale, '/tags')}>{t('nav.tags')}</a>
+        </div>
+        <div class="lang-switcher-nav">
+          {Object.entries(languages).map(([code, name]) => {
+            const targetLang = code as Language;
+            const isActive = targetLang === currentLocale;
+
+            // Check if this language is available
+            const isAvailable = !availableLanguages || availableLanguages.includes(targetLang);
+
+            // Generate URL based on context
+            let targetUrl: string;
+            if (postSlug) {
+              // On post page: link to same post in target language
+              targetUrl = `/posts/${targetLang}/${postSlug}`;
+            } else {
+              // On other pages: use i18n routing
+              targetUrl = getRelativeLocaleUrl(targetLang, pathWithoutLocale);
+            }
+
+            return (
+              <a
+                href={isAvailable ? targetUrl : '#'}
+                class:list={[
+                  'lang-nav-link',
+                  { active: isActive },
+                  { disabled: !isAvailable }
+                ]}
+                aria-disabled={!isAvailable}
+                title={!isAvailable ? `Not available in ${name}` : undefined}
+              >
+                {name}
+              </a>
+            );
+          })}
+        </div>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>&copy; {new Date().getFullYear()} EasyDiagrams. Content licensed under CC BY-SA 4.0, Code under MIT.</p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: #1f2937;
+  }
+
+  header {
+    background: #1f2937;
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    flex: 1;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .nav-links a:hover {
+    opacity: 0.8;
+  }
+
+  .lang-switcher-nav {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .lang-nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s;
+  }
+
+  .lang-nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .lang-nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 600;
+  }
+
+  .lang-nav-link.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .lang-nav-link.disabled:hover {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: calc(100vh - 200px);
+  }
+
+  footer {
+    background: #f3f4f6;
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-top: 4rem;
+  }
+</style>

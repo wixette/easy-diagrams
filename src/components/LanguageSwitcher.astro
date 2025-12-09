@@ -1,0 +1,79 @@
+---
+import { languages, useTranslations, type Language } from '../utils/i18n';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+interface Props {
+  currentLang: Language;
+  availableLanguages: Language[];
+  postSlug?: string;
+}
+
+const { currentLang, availableLanguages, postSlug } = Astro.props;
+const t = useTranslations(currentLang);
+---
+
+<div class="language-switcher">
+  <span class="label">{t('language.switch')}:</span>
+  <div class="languages">
+    {availableLanguages.map((lang) => {
+      // For posts, manually construct URL since they don't follow i18n routing
+      // Post URLs are: /posts/en/slug, /posts/zh/slug (not /en/posts/slug)
+      const url = postSlug
+        ? `/posts/${lang}/${postSlug}`
+        : getRelativeLocaleUrl(lang, '/');
+      return (
+        <a
+          href={url}
+          class:list={['lang-link', { active: lang === currentLang }]}
+          aria-current={lang === currentLang ? 'page' : undefined}
+        >
+          {languages[lang]}
+        </a>
+      );
+    })}
+  </div>
+</div>
+
+<style>
+  .language-switcher {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    background: #f3f4f6;
+  }
+
+  .label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4b5563;
+  }
+
+  .languages {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .lang-link {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: #374151;
+    background: white;
+    border: 1px solid #d1d5db;
+    transition: all 0.2s;
+  }
+
+  .lang-link:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+  }
+
+  .lang-link.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+  }
+</style>

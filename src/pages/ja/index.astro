@@ -1,12 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { useTranslations } from '../utils/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../utils/i18n';
 
-const lang = Astro.currentLocale || 'en';
+const lang = Astro.currentLocale || 'ja';
 const t = useTranslations(lang);
 
-// Get all posts in current language (posts in en/ folder)
+// Get all posts in current language (posts in ja/ folder)
 const allPosts = await getCollection('posts', ({ slug }) => {
   return slug.startsWith(`${lang}/`);
 });
@@ -24,8 +24,8 @@ const recentPosts = allPosts
 ---
 
 <BaseLayout
-  title="Home"
-  description="Visualizing fundamental concepts through diagrams and videos"
+  title="ホーム"
+  description="図表と動画で基本概念を視覚化"
   lang={lang}
 >
   <div class="home">
@@ -38,8 +38,8 @@ const recentPosts = allPosts
         {t('home.description')}
       </p>
       <div class="cta">
-        <a href="/posts" class="button primary">{t('home.browsePosts')}</a>
-        <a href="/tags" class="button secondary">{t('home.exploreTags')}</a>
+        <a href="/ja/posts" class="button primary">{t('home.browsePosts')}</a>
+        <a href="/ja/tags" class="button secondary">{t('home.exploreTags')}</a>
       </div>
     </section>
 
@@ -102,7 +102,7 @@ const recentPosts = allPosts
         ))}
       </div>
       <div class="view-all">
-        <a href="/posts">{t('home.viewAll')} →</a>
+        <a href="/ja/posts">{t('home.viewAll')} →</a>
       </div>
     </section>
   </div>

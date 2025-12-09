@@ -1,0 +1,195 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const lang = 'en';
+  const allPosts = await getCollection('posts', ({ slug }) => {
+    return slug.startsWith(`${lang}/`);
+  });
+
+  const uniqueTags = new Set<string>();
+  allPosts.forEach((post) => {
+    post.data.tags.forEach((tag) => uniqueTags.add(tag));
+  });
+
+  return Array.from(uniqueTags).map((tag) => {
+    const filteredPosts = allPosts.filter((post) =>
+      post.data.tags.includes(tag)
+    );
+    return {
+      params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
+      props: { tag, posts: filteredPosts },
+    };
+  });
+}
+
+const { tag, posts } = Astro.props;
+const lang = Astro.currentLocale || 'en';
+
+// Sort by date, most recent first
+const sortedPosts = posts.sort((a: any, b: any) =>
+  b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout title={`Tag: ${tag}`} lang={lang}>
+  <div class="tag-page">
+    <div class="header">
+      <h1>
+        <span class="tag-label">Tag:</span> {tag}
+      </h1>
+      <p class="count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+    </div>
+
+    <div class="posts-list">
+      {sortedPosts.map((post: any) => (
+        <article class="post-item">
+          <div class="post-header">
+            <h2>
+              <a href={`/posts/${post.slug}`}>
+                {post.data.title}
+              </a>
+            </h2>
+            <time datetime={post.data.pubDate.toISOString()}>
+              {post.data.pubDate.toLocaleDateString(lang)}
+            </time>
+          </div>
+          <p class="description">{post.data.description}</p>
+          <div class="tags">
+            {post.data.tags.map((t: string) => (
+              <a
+                href={`/tags/${t.toLowerCase().replace(/\s+/g, '-')}`}
+                class="tag"
+              >
+                {t}
+              </a>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="back-link">
+      <a href="/tags">← View all tags</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: #111827;
+    margin-bottom: 0.5rem;
+  }
+
+  .tag-label {
+    color: #6b7280;
+    font-size: 1.5rem;
+  }
+
+  .count {
+    color: #9ca3af;
+    font-size: 1rem;
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .post-item {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .post-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  h2 a {
+    color: #111827;
+    text-decoration: none;
+  }
+
+  h2 a:hover {
+    color: #3b82f6;
+  }
+
+  time {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .description {
+    color: #6b7280;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: #eff6ff;
+    color: #1e40af;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+  }
+
+  .tag:hover {
+    background: #dbeafe;
+  }
+
+  .back-link {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .back-link a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .back-link a:hover {
+    text-decoration: underline;
+  }
+</style>
