@@ -2,15 +2,22 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 
+import tailwindcss from '@tailwindcss/vite';
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [mdx()],
   site: 'https://easydiagrams.com',
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'zh', 'ja'],
     routing: {
       prefixDefaultLocale: false,
     },
+  },
+
+  vite: {
+    plugins: [tailwindcss()],
   },
 });

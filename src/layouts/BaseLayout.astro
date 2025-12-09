@@ -1,4 +1,5 @@
 ---
+import '../styles/global.css';
 import { languages, useTranslations, type Language } from '../utils/i18n';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
@@ -46,16 +47,16 @@ const pathWithoutLocale = getPathWithoutLocale(Astro.url.pathname, currentLocale
     <title>{pageTitle}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body>
-    <header>
-      <nav>
-        <a href={getRelativeLocaleUrl(currentLocale, '/')} class="logo">EasyDiagrams</a>
-        <div class="nav-links">
-          <a href={getRelativeLocaleUrl(currentLocale, '/')}>{t('nav.home')}</a>
-          <a href={getRelativeLocaleUrl(currentLocale, '/posts')}>{t('nav.posts')}</a>
-          <a href={getRelativeLocaleUrl(currentLocale, '/tags')}>{t('nav.tags')}</a>
+  <body class="font-sans leading-normal text-gray-800 m-0 p-0">
+    <header class="bg-gray-800 text-white px-8 py-4 shadow-md">
+      <nav class="max-w-screen-xl mx-auto flex justify-between items-center gap-8">
+        <a href={getRelativeLocaleUrl(currentLocale, '/')} class="text-2xl font-bold text-white no-underline">EasyDiagrams</a>
+        <div class="flex gap-6 flex-1">
+          <a href={getRelativeLocaleUrl(currentLocale, '/')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.home')}</a>
+          <a href={getRelativeLocaleUrl(currentLocale, '/posts')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.posts')}</a>
+          <a href={getRelativeLocaleUrl(currentLocale, '/tags')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.tags')}</a>
         </div>
-        <div class="lang-switcher-nav">
+        <div class="flex gap-3 items-center">
           {Object.entries(languages).map(([code, name]) => {
             const targetLang = code as Language;
             const isActive = targetLang === currentLocale;
@@ -77,9 +78,10 @@ const pathWithoutLocale = getPathWithoutLocale(Astro.url.pathname, currentLocale
               <a
                 href={isAvailable ? targetUrl : '#'}
                 class:list={[
-                  'lang-nav-link',
-                  { active: isActive },
-                  { disabled: !isAvailable }
+                  'text-white/80 no-underline text-sm px-2 py-1 rounded transition-all',
+                  'hover:bg-white/10 hover:text-white',
+                  { 'bg-white/20 text-white font-semibold': isActive },
+                  { 'opacity-40 cursor-not-allowed pointer-events-none': !isAvailable }
                 ]}
                 aria-disabled={!isAvailable}
                 title={!isAvailable ? `Not available in ${name}` : undefined}
@@ -91,117 +93,11 @@ const pathWithoutLocale = getPathWithoutLocale(Astro.url.pathname, currentLocale
         </div>
       </nav>
     </header>
-    <main>
+    <main class="max-w-screen-xl mx-auto px-8 py-8 min-h-[calc(100vh-200px)]">
       <slot />
     </main>
-    <footer>
+    <footer class="bg-gray-100 px-8 py-8 text-center text-gray-500 text-sm mt-16">
       <p>&copy; {new Date().getFullYear()} EasyDiagrams. Content licensed under CC BY-SA 4.0, Code under MIT.</p>
     </footer>
   </body>
 </html>
-
-<style is:global>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: system-ui, -apple-system, sans-serif;
-    line-height: 1.6;
-    color: #1f2937;
-  }
-
-  header {
-    background: #1f2937;
-    color: white;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-
-  nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 1.5rem;
-    flex: 1;
-  }
-
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
-
-  .nav-links a:hover {
-    opacity: 0.8;
-  }
-
-  .lang-switcher-nav {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .lang-nav-link {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    transition: all 0.2s;
-  }
-
-  .lang-nav-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-
-  .lang-nav-link.active {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-weight: 600;
-  }
-
-  .lang-nav-link.disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
-  .lang-nav-link.disabled:hover {
-    background: transparent;
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    min-height: calc(100vh - 200px);
-  }
-
-  footer {
-    background: #f3f4f6;
-    padding: 2rem;
-    text-align: center;
-    color: #6b7280;
-    font-size: 0.875rem;
-    margin-top: 4rem;
-  }
-</style>
