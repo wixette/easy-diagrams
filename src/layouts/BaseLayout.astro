@@ -78,7 +78,7 @@ const getTargetUrl = (targetLang: Language): string => {
         />
       </nav>
     </header>
-    <main class="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-8 min-h-[calc(100vh-200px)]">
+    <main class="max-w-screen-xl mx-auto px-4 py-4 md:px-4 md:py-4 lg:px-6 lg:py-6 min-h-[calc(100vh-200px)]">
       <slot />
     </main>
     <footer class="bg-bg-primary border-t border-dotted px-2 md:px-3 lg:px-4 py-4 text-center mt-16">
@@ -115,5 +115,9 @@ const getTargetUrl = (targetLang: Language): string => {
 
   .nav-link:hover {
     color: var(--color-primary-cyan);
+  }
+
+  .border-dotted {
+    border-color: var(--color-border-dotted);
   }
 </style>
