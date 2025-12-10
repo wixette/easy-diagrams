@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { languages, useTranslations, type Language } from '../utils/i18n';
 import { getRelativeLocaleUrl } from 'astro:i18n';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 
 interface Props {
   title: string;
@@ -35,6 +36,17 @@ const getPathWithoutLocale = (pathname: string, locale: string) => {
 };
 
 const pathWithoutLocale = getPathWithoutLocale(Astro.url.pathname, currentLocale);
+
+// Function to generate target URL for a given language
+const getTargetUrl = (targetLang: Language): string => {
+  if (postSlug) {
+    // On post page: link to same post in target language
+    return `/posts/${targetLang}/${postSlug}`;
+  } else {
+    // On other pages: use i18n routing
+    return getRelativeLocaleUrl(targetLang, pathWithoutLocale);
+  }
+};
 ---
 
 <!doctype html>
@@ -58,41 +70,12 @@ const pathWithoutLocale = getPathWithoutLocale(Astro.url.pathname, currentLocale
           <a href={getRelativeLocaleUrl(currentLocale, '/posts')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.posts')}</a>
           <a href={getRelativeLocaleUrl(currentLocale, '/tags')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.tags')}</a>
         </div>
-        <div class="flex gap-3 items-center">
-          {Object.entries(languages).map(([code, name]) => {
-            const targetLang = code as Language;
-            const isActive = targetLang === currentLocale;
-
-            // Check if this language is available
-            const isAvailable = !availableLanguages || availableLanguages.includes(targetLang);
-
-            // Generate URL based on context
-            let targetUrl: string;
-            if (postSlug) {
-              // On post page: link to same post in target language
-              targetUrl = `/posts/${targetLang}/${postSlug}`;
-            } else {
-              // On other pages: use i18n routing
-              targetUrl = getRelativeLocaleUrl(targetLang, pathWithoutLocale);
-            }
-
-            return (
-              <a
-                href={isAvailable ? targetUrl : '#'}
-                class:list={[
-                  'text-white/80 no-underline text-sm px-2 py-1 rounded transition-all',
-                  'hover:bg-white/10 hover:text-white',
-                  { 'bg-white/20 text-white font-semibold': isActive },
-                  { 'opacity-40 cursor-not-allowed pointer-events-none': !isAvailable }
-                ]}
-                aria-disabled={!isAvailable}
-                title={!isAvailable ? `Not available in ${name}` : undefined}
-              >
-                {name}
-              </a>
-            );
-          })}
-        </div>
+        <LanguageSwitcher
+          currentLang={currentLocale}
+          availableLanguages={availableLanguages}
+          postSlug={postSlug}
+          getTargetUrl={getTargetUrl}
+        />
       </nav>
     </header>
     <main class="max-w-screen-xl mx-auto px-8 py-8 min-h-[calc(100vh-200px)]">

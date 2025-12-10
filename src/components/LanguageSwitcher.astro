@@ -1,33 +1,59 @@
 ---
-import { languages, useTranslations, type Language } from '../utils/i18n';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { languages, type Language } from '../utils/i18n';
 
 interface Props {
   currentLang: Language;
-  availableLanguages: Language[];
+  availableLanguages?: Language[];
   postSlug?: string;
+  getTargetUrl: (lang: Language) => string;
 }
 
-const { currentLang, availableLanguages, postSlug } = Astro.props;
-const t = useTranslations(currentLang);
+const { currentLang, availableLanguages, postSlug, getTargetUrl } = Astro.props;
 ---
 
-<div class="language-switcher">
-  <span class="label">{t('language.switch')}:</span>
-  <div class="languages">
-    {availableLanguages.map((lang) => {
-      // For posts, manually construct URL since they don't follow i18n routing
-      // Post URLs are: /posts/en/slug, /posts/zh/slug (not /en/posts/slug)
-      const url = postSlug
-        ? `/posts/${lang}/${postSlug}`
-        : getRelativeLocaleUrl(lang, '/');
+<div class="language-dropdown" data-dropdown>
+  <button
+    type="button"
+    class="dropdown-trigger"
+    aria-haspopup="true"
+    aria-expanded="false"
+    data-dropdown-trigger
+  >
+    <span class="current-lang">{languages[currentLang]}</span>
+    <svg
+      class="dropdown-arrow"
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div class="dropdown-menu" data-dropdown-menu role="menu">
+    {Object.entries(languages).map(([code, name]) => {
+      const targetLang = code as Language;
+      const isActive = targetLang === currentLang;
+      const isAvailable = !availableLanguages || availableLanguages.includes(targetLang);
+      const targetUrl = getTargetUrl(targetLang);
+
       return (
         <a
-          href={url}
-          class:list={['lang-link', { active: lang === currentLang }]}
-          aria-current={lang === currentLang ? 'page' : undefined}
+          href={isAvailable ? targetUrl : '#'}
+          class:list={[
+            'dropdown-item',
+            { 'active': isActive },
+            { 'disabled': !isAvailable }
+          ]}
+          role="menuitem"
+          aria-current={isActive ? 'page' : undefined}
+          aria-disabled={!isAvailable}
+          title={!isAvailable ? `Not available in ${name}` : undefined}
         >
-          {languages[lang]}
+          {name}
+          {isActive && <span class="check-mark" aria-label="(current)">✓</span>}
         </a>
       );
     })}
@@ -35,45 +61,194 @@ const t = useTranslations(currentLang);
 </div>
 
 <style>
-  .language-switcher {
+  .language-dropdown {
+    position: relative;
+  }
+
+  .dropdown-trigger {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    background: #f3f4f6;
-  }
-
-  .label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #4b5563;
-  }
-
-  .languages {
-    display: flex;
     gap: 0.5rem;
-  }
-
-  .lang-link {
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.375rem;
+    color: white;
     font-size: 0.875rem;
-    text-decoration: none;
-    color: #374151;
-    background: white;
-    border: 1px solid #d1d5db;
+    cursor: pointer;
     transition: all 0.2s;
   }
 
-  .lang-link:hover {
-    background: #e5e7eb;
-    border-color: #9ca3af;
+  .dropdown-trigger:hover {
+    background: rgba(255, 255, 255, 0.15);
   }
 
-  .lang-link.active {
-    background: #3b82f6;
-    color: white;
-    border-color: #3b82f6;
+  .dropdown-trigger:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+  }
+
+  .dropdown-arrow {
+    transition: transform 0.2s;
+  }
+
+  .dropdown-trigger[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 10rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-0.5rem);
+    transition: all 0.2s;
+    z-index: 50;
+  }
+
+  .dropdown-menu[data-open="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 1rem;
+    color: #374151;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .dropdown-item:first-child {
+    border-radius: 0.375rem 0.375rem 0 0;
+  }
+
+  .dropdown-item:last-child {
+    border-radius: 0 0 0.375rem 0.375rem;
+  }
+
+  .dropdown-item:hover:not(.disabled) {
+    background: #f3f4f6;
+  }
+
+  .dropdown-item:focus {
+    outline: none;
+    background: #e5e7eb;
+  }
+
+  .dropdown-item.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 500;
+  }
+
+  .dropdown-item.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .check-mark {
+    color: #2563eb;
+    font-weight: bold;
   }
 </style>
+
+<script>
+  // Handle dropdown interactions
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropdowns = document.querySelectorAll('[data-dropdown]');
+
+    dropdowns.forEach((dropdown) => {
+      const trigger = dropdown.querySelector('[data-dropdown-trigger]') as HTMLButtonElement;
+      const menu = dropdown.querySelector('[data-dropdown-menu]') as HTMLElement;
+      const items = menu.querySelectorAll('.dropdown-item:not(.disabled)') as NodeListOf<HTMLAnchorElement>;
+
+      let isOpen = false;
+
+      const open = () => {
+        isOpen = true;
+        trigger.setAttribute('aria-expanded', 'true');
+        menu.setAttribute('data-open', 'true');
+        // Focus first item
+        (items[0] as HTMLElement)?.focus();
+      };
+
+      const close = () => {
+        isOpen = false;
+        trigger.setAttribute('aria-expanded', 'false');
+        menu.removeAttribute('data-open');
+      };
+
+      const toggle = () => {
+        if (isOpen) {
+          close();
+        } else {
+          open();
+        }
+      };
+
+      // Toggle on button click
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggle();
+      });
+
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        if (isOpen && !dropdown.contains(e.target as Node)) {
+          close();
+        }
+      });
+
+      // Keyboard navigation
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          open();
+        } else if (e.key === 'Escape') {
+          close();
+          trigger.focus();
+        }
+      });
+
+      menu.addEventListener('keydown', (e) => {
+        const currentIndex = Array.from(items).indexOf(document.activeElement as HTMLAnchorElement);
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const nextIndex = (currentIndex + 1) % items.length;
+          (items[nextIndex] as HTMLElement).focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prevIndex = currentIndex <= 0 ? items.length - 1 : currentIndex - 1;
+          (items[prevIndex] as HTMLElement).focus();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          close();
+          trigger.focus();
+        } else if (e.key === 'Tab') {
+          close();
+        }
+      });
+
+      // Close on item selection
+      items.forEach((item) => {
+        item.addEventListener('click', () => {
+          close();
+        });
+      });
+    });
+  });
+</script>
