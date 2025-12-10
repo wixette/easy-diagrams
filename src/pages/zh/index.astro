@@ -37,10 +37,6 @@ const recentPosts = allPosts
       <p class="description">
         {t('home.description')}
       </p>
-      <div class="cta">
-        <a href="/zh/posts" class="button primary">{t('home.browsePosts')}</a>
-        <a href="/zh/tags" class="button secondary">{t('home.exploreTags')}</a>
-      </div>
     </section>
 
     {featuredPosts.length > 0 && (
@@ -71,6 +67,11 @@ const recentPosts = allPosts
               </div>
             </article>
           ))}
+        </div>
+        <div class="view-all">
+          <a href="/zh/posts">{t('home.viewAll')} →</a>
+          <span class="separator">•</span>
+          <a href="/zh/tags">按标签探索 →</a>
         </div>
       </section>
     )}
@@ -103,6 +104,8 @@ const recentPosts = allPosts
       </div>
       <div class="view-all">
         <a href="/zh/posts">{t('home.viewAll')} →</a>
+        <span class="separator">•</span>
+        <a href="/zh/tags">按标签探索 →</a>
       </div>
     </section>
   </div>
@@ -318,18 +321,27 @@ const recentPosts = allPosts
   .view-all {
     text-align: center;
     margin-top: var(--spacing-8);
+    display: flex;
+    gap: var(--spacing-3);
+    justify-content: center;
+    align-items: center;
   }
 
   .view-all a {
     color: var(--color-primary-cyan);
     text-decoration: none;
     font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     transition: opacity var(--duration-fast) var(--ease-in-out);
   }
 
   .view-all a:hover {
     text-decoration: underline;
     opacity: 0.7;
+  }
+
+  .view-all .separator {
+    color: var(--color-text-light);
+    font-size: var(--font-size-base);
   }
 </style>
