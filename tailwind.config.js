@@ -15,7 +15,7 @@ export default {
         'bg-tag': '#E0F7F6',
         'border-primary': '#4ECDC4',
         'border-secondary': '#E5E5E5',
-        'border-dotted': '#CCCCCC',
+        'border-dotted': '#F4C430',
       },
       borderRadius: {
         'sm': '4px',

@@ -60,12 +60,12 @@ const getTargetUrl = (targetLang: Language): string => {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="font-sans leading-normal m-0 p-0">
-    <header class="bg-bg-primary border-b border-dotted border-border-dotted">
-      <nav class="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-3 md:py-4 flex justify-between items-center gap-4 md:gap-8 min-h-[64px] md:min-h-[80px]">
+    <header class="bg-bg-primary border-b border-dotted">
+      <nav class="max-w-screen-xl mx-auto px-3 md:px-6 lg:px-8 py-2 md:py-3 flex justify-between items-center gap-4 md:gap-8 min-h-[64px] md:min-h-[80px]">
         <a href={getRelativeLocaleUrl(currentLocale, '/')} class="flex items-center gap-3 no-underline">
           <img src="/logo.svg" alt="EasyDiagrams" class="h-12" />
         </a>
-        <div class="flex gap-4 md:gap-6 flex-1">
+        <div class="flex gap-3 md:gap-3 flex-1">
           <a href={getRelativeLocaleUrl(currentLocale, '/')} class="nav-link">{t('nav.home')}</a>
           <a href={getRelativeLocaleUrl(currentLocale, '/posts')} class="nav-link">{t('nav.posts')}</a>
           <a href={getRelativeLocaleUrl(currentLocale, '/tags')} class="nav-link">{t('nav.tags')}</a>
@@ -81,7 +81,7 @@ const getTargetUrl = (targetLang: Language): string => {
     <main class="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-8 min-h-[calc(100vh-200px)]">
       <slot />
     </main>
-    <footer class="bg-bg-primary border-t border-border-secondary px-4 md:px-6 lg:px-8 py-8 text-center mt-16">
+    <footer class="bg-bg-primary border-t border-dotted px-2 md:px-3 lg:px-4 py-4 text-center mt-16">
       <p class="text-text-secondary text-sm">&copy; {new Date().getFullYear()} EasyDiagrams. Content licensed under CC BY-SA 4.0, Code under MIT.</p>
     </footer>
   </body>
