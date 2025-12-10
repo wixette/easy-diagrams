@@ -26,6 +26,15 @@ const availableLanguages = [...new Set(
     .filter(p => p.slug.endsWith(`/${baseSlug}`))
     .map(p => p.slug.split('/')[0])
 )] as Language[];
+
+// Get prev/next posts in the same language, sorted by date (newest first)
+const postsInSameLang = allPosts
+  .filter(p => p.slug.startsWith(`${lang}/`))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const currentIndex = postsInSameLang.findIndex(p => p.slug === post.slug);
+const nextPost = currentIndex > 0 ? postsInSameLang[currentIndex - 1] : null;
+const prevPost = currentIndex < postsInSameLang.length - 1 ? postsInSameLang[currentIndex + 1] : null;
 ---
 
 <PostLayout
@@ -37,6 +46,8 @@ const availableLanguages = [...new Set(
   lang={lang as Language}
   availableLanguages={availableLanguages}
   baseSlug={baseSlug}
+  prevPost={prevPost}
+  nextPost={nextPost}
 >
   <Content />
 </PostLayout>

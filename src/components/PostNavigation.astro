@@ -1,0 +1,117 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  prevPost: CollectionEntry<'posts'> | null;
+  nextPost: CollectionEntry<'posts'> | null;
+  prevLabel: string;
+  nextLabel: string;
+}
+
+const { prevPost, nextPost, prevLabel, nextLabel } = Astro.props;
+
+// Helper to extract base slug from full slug
+const getBaseSlug = (slug: string) => {
+  const parts = slug.split('/');
+  return parts.slice(1).join('/');
+};
+---
+
+{(prevPost || nextPost) && (
+  <nav class="post-navigation" aria-label="Post navigation">
+    <div class="nav-container">
+      {prevPost ? (
+        <a href={`/posts/${prevPost.slug}`} class="nav-link prev" rel="prev">
+          <span class="nav-direction">&larr; {prevLabel}</span>
+          <span class="nav-title">{prevPost.data.title}</span>
+        </a>
+      ) : (
+        <div class="nav-link-placeholder"></div>
+      )}
+
+      {nextPost ? (
+        <a href={`/posts/${nextPost.slug}`} class="nav-link next" rel="next">
+          <span class="nav-direction">{nextLabel} &rarr;</span>
+          <span class="nav-title">{nextPost.data.title}</span>
+        </a>
+      ) : (
+        <div class="nav-link-placeholder"></div>
+      )}
+    </div>
+  </nav>
+)}
+
+<style>
+  .post-navigation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e5e7eb;
+  }
+
+  .nav-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .nav-container {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  .nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    background: white;
+  }
+
+  .nav-link:hover {
+    border-color: #3b82f6;
+    background: #f0f9ff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-link:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  .nav-link.prev {
+    text-align: left;
+  }
+
+  .nav-link.next {
+    text-align: right;
+  }
+
+  .nav-direction {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-link:hover .nav-direction {
+    color: #3b82f6;
+  }
+
+  .nav-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  .nav-link-placeholder {
+    /* Takes up space in the grid when there's no prev/next post */
+  }
+</style>

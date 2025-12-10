@@ -1,37 +1,32 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations } from '../../utils/i18n';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../../utils/i18n';
 
 export async function getStaticPaths() {
-  const languages = ['en', 'zh', 'ja'];
-  const paths: any[] = [];
+  const lang = 'zh';
+  const allPosts = await getCollection('posts', ({ slug }) => {
+    return slug.startsWith(`${lang}/`);
+  });
 
-  for (const lang of languages) {
-    const allPosts = await getCollection('posts', ({ slug }) => {
-      return slug.startsWith(`${lang}/`);
-    });
+  const uniqueTags = new Set<string>();
+  allPosts.forEach((post) => {
+    post.data.tags.forEach((tag) => uniqueTags.add(tag));
+  });
 
-    const uniqueTags = new Set<string>();
-    allPosts.forEach((post) => {
-      post.data.tags.forEach((tag) => uniqueTags.add(tag));
-    });
-
-    Array.from(uniqueTags).forEach((tag) => {
-      const filteredPosts = allPosts.filter((post) =>
-        post.data.tags.includes(tag)
-      );
-      paths.push({
-        params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
-        props: { tag, posts: filteredPosts, lang },
-      });
-    });
-  }
-
-  return paths;
+  return Array.from(uniqueTags).map((tag) => {
+    const filteredPosts = allPosts.filter((post) =>
+      post.data.tags.includes(tag)
+    );
+    return {
+      params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
+      props: { tag, posts: filteredPosts },
+    };
+  });
 }
 
-const { tag, posts, lang } = Astro.props;
+const { tag, posts } = Astro.props;
+const lang = 'zh';
 const t = useTranslations(lang);
 
 // Sort by date, most recent first
@@ -46,7 +41,7 @@ const sortedPosts = posts.sort((a: any, b: any) =>
       <h1>
         <span class="tag-label">{t('post.tags')}:</span> {tag}
       </h1>
-      <p class="count">{posts.length} {posts.length === 1 ? t('nav.posts').slice(0, -1) : t('nav.posts').toLowerCase()}</p>
+      <p class="count">{posts.length} 篇文章</p>
     </div>
 
     <div class="posts-list">
@@ -66,7 +61,7 @@ const sortedPosts = posts.sort((a: any, b: any) =>
           <div class="tags">
             {post.data.tags.map((t: string) => (
               <a
-                href={`/tags/${t.toLowerCase().replace(/\s+/g, '-')}`}
+                href={`/zh/tags/${t.toLowerCase().replace(/\s+/g, '-')}`}
                 class="tag"
               >
                 {t}
@@ -78,7 +73,7 @@ const sortedPosts = posts.sort((a: any, b: any) =>
     </div>
 
     <div class="back-link">
-      <a href={lang === 'en' ? '/tags' : `/${lang}/tags`}>← {lang === 'en' ? 'View all tags' : lang === 'zh' ? '查看所有标签' : 'すべてのタグを表示'}</a>
+      <a href="/zh/tags">← 查看所有标签</a>
     </div>
   </div>
 </BaseLayout>
