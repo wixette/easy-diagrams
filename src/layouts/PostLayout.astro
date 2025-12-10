@@ -29,10 +29,10 @@ const t = useTranslations(lang);
   postSlug={baseSlug}
 >
   <article class="max-w-3xl mx-auto">
-    <header class="mb-8 p-8 pb-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg text-white">
-      <h1 class="text-4xl mb-2 text-white">{title}</h1>
-      <p class="text-xl text-white/90 mb-4">{description}</p>
-      <div class="text-sm text-white/80 mb-4">
+    <header class="mb-12">
+      <h1 class="post-title">{title}</h1>
+      <p class="post-description">{description}</p>
+      <div class="post-meta">
         <time datetime={pubDate.toISOString()}>
           {t('post.published')} {pubDate.toLocaleDateString(lang)}
         </time>
@@ -44,10 +44,10 @@ const t = useTranslations(lang);
       </div>
     </header>
 
-    <div class="flex gap-2 flex-wrap items-center mb-8 text-sm">
-      <span class="font-semibold text-gray-500">{t('post.tags')}:</span>
+    <div class="tags-container">
+      <span class="tags-label">{t('post.tags')}:</span>
       {tags.map((tag) => (
-        <a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="bg-blue-50 text-blue-800 px-3 py-1 rounded-full no-underline font-medium transition-colors hover:bg-blue-100">
+        <a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`} class="tag-pill">
           {tag}
         </a>
       ))}
@@ -65,3 +65,54 @@ const t = useTranslations(lang);
     />
   </article>
 </BaseLayout>
+
+<style>
+  .post-title {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .post-description {
+    font-size: var(--font-size-xl);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-normal);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .post-meta {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-light);
+  }
+
+  .tags-container {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: var(--spacing-8);
+    font-size: var(--font-size-sm);
+  }
+
+  .tags-label {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+  }
+
+  .tag-pill {
+    background-color: var(--color-bg-tag);
+    color: var(--color-text-primary);
+    padding: var(--spacing-1) var(--spacing-3);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: background-color var(--duration-fast) var(--ease-in-out);
+  }
+
+  .tag-pill:hover {
+    background-color: #c7f0ed;
+  }
+</style>

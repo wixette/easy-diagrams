@@ -115,99 +115,142 @@ const recentPosts = allPosts
   }
 
   .hero {
-    text-align: center;
-    padding: 4rem 2rem;
-    margin-bottom: 4rem;
+    padding: var(--spacing-12) var(--spacing-4);
+    margin-bottom: var(--spacing-12);
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      padding: var(--spacing-16) var(--spacing-4);
+      margin-bottom: var(--spacing-16);
+    }
   }
 
   .hero h1 {
-    font-size: 3.5rem;
-    color: #111827;
-    margin-bottom: 1rem;
+    font-size: var(--font-size-4xl);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-6);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+  }
+
+  @media (min-width: 768px) {
+    .hero h1 {
+      font-size: var(--font-size-5xl);
+    }
   }
 
   .tagline {
-    font-size: 1.5rem;
-    color: #3b82f6;
-    margin-bottom: 1rem;
-    font-weight: 500;
+    font-size: var(--font-size-3xl);
+    color: var(--color-primary-cyan);
+    margin-bottom: var(--spacing-4);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+  }
+
+  @media (min-width: 768px) {
+    .tagline {
+      font-size: var(--font-size-4xl);
+    }
   }
 
   .description {
-    font-size: 1.125rem;
-    color: #6b7280;
-    max-width: 600px;
-    margin: 0 auto 2rem;
-    line-height: 1.6;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    max-width: 800px;
+    margin: 0 auto var(--spacing-8);
+    line-height: var(--line-height-normal);
+  }
+
+  @media (min-width: 768px) {
+    .description {
+      font-size: var(--font-size-lg);
+    }
   }
 
   .cta {
     display: flex;
-    gap: 1rem;
+    gap: var(--spacing-4);
     justify-content: center;
     flex-wrap: wrap;
   }
 
   .button {
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
+    padding: var(--spacing-3) var(--spacing-6);
+    border-radius: var(--radius-md);
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s;
+    font-weight: var(--font-weight-medium);
+    transition: all var(--duration-fast) var(--ease-in-out);
     display: inline-block;
+    font-size: var(--font-size-base);
   }
 
   .button.primary {
-    background: #3b82f6;
+    background: var(--color-primary-orange);
     color: white;
   }
 
   .button.primary:hover {
-    background: #2563eb;
+    background-color: #e67a2e;
     transform: translateY(-2px);
   }
 
   .button.secondary {
     background: white;
-    color: #3b82f6;
-    border: 2px solid #3b82f6;
+    color: var(--color-primary-cyan);
+    border: var(--border-width-medium) solid var(--color-primary-cyan);
   }
 
   .button.secondary:hover {
-    background: #eff6ff;
+    background: var(--color-bg-tag);
   }
 
   section {
-    margin-bottom: 4rem;
+    margin-bottom: var(--spacing-16);
   }
 
   h2 {
-    font-size: 2rem;
-    color: #111827;
-    margin-bottom: 2rem;
+    font-size: var(--font-size-3xl);
+    color: var(--color-primary-orange);
+    margin-bottom: var(--spacing-6);
+    font-weight: var(--font-weight-bold);
   }
 
   .posts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+  }
+
+  @media (min-width: 768px) {
+    .posts-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .posts-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-8);
+    }
   }
 
   .post-card {
-    background: white;
-    border-radius: 0.5rem;
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    border: var(--border-width-medium) dashed var(--color-border-primary);
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--duration-normal) var(--ease-in-out);
   }
 
   .post-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
   }
 
   .featured-card {
-    border: 2px solid #fbbf24;
+    border-color: var(--color-primary-orange);
   }
 
   .hero-image {
@@ -217,68 +260,76 @@ const recentPosts = allPosts
   }
 
   .post-content {
-    padding: 1.5rem;
+    padding: var(--spacing-6);
   }
 
   h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-3);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
   }
 
   h3 a {
-    color: #111827;
+    color: var(--color-text-primary);
     text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-in-out);
   }
 
   h3 a:hover {
-    color: #3b82f6;
+    color: var(--color-primary-cyan);
   }
 
   .post-card .description {
-    color: #6b7280;
-    margin-bottom: 1rem;
-    line-height: 1.5;
-    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-4);
+    line-height: var(--line-height-normal);
+    font-size: var(--font-size-base);
   }
 
   .meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
   }
 
   time {
-    color: #9ca3af;
+    color: var(--color-text-light);
   }
 
   .tags {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--spacing-2);
     flex-wrap: wrap;
   }
 
   .tag {
-    background: #eff6ff;
-    color: #1e40af;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
+    background: var(--color-bg-tag);
+    color: var(--color-text-primary);
+    padding: var(--spacing-1) var(--spacing-3);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
   }
 
   .view-all {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: var(--spacing-8);
   }
 
   .view-all a {
-    color: #3b82f6;
+    color: var(--color-primary-cyan);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 1.125rem;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-lg);
+    transition: opacity var(--duration-fast) var(--ease-in-out);
   }
 
   .view-all a:hover {
     text-decoration: underline;
+    opacity: 0.7;
   }
 </style>

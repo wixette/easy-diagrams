@@ -59,16 +59,16 @@ const getTargetUrl = (targetLang: Language): string => {
     <title>{pageTitle}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body class="font-sans leading-normal text-gray-800 m-0 p-0">
-    <header class="bg-gray-800 text-white px-8 py-4 shadow-md">
-      <nav class="max-w-screen-xl mx-auto flex justify-between items-center gap-8">
-        <a href={getRelativeLocaleUrl(currentLocale, '/')} class="flex items-center text-white no-underline">
+  <body class="font-sans leading-normal m-0 p-0">
+    <header class="bg-bg-primary border-b border-dotted border-border-dotted">
+      <nav class="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-3 md:py-4 flex justify-between items-center gap-4 md:gap-8 min-h-[64px] md:min-h-[80px]">
+        <a href={getRelativeLocaleUrl(currentLocale, '/')} class="flex items-center gap-3 no-underline">
           <img src="/logo.svg" alt="EasyDiagrams" class="h-12" />
         </a>
-        <div class="flex gap-6 flex-1">
-          <a href={getRelativeLocaleUrl(currentLocale, '/')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.home')}</a>
-          <a href={getRelativeLocaleUrl(currentLocale, '/posts')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.posts')}</a>
-          <a href={getRelativeLocaleUrl(currentLocale, '/tags')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.tags')}</a>
+        <div class="flex gap-4 md:gap-6 flex-1">
+          <a href={getRelativeLocaleUrl(currentLocale, '/')} class="nav-link">{t('nav.home')}</a>
+          <a href={getRelativeLocaleUrl(currentLocale, '/posts')} class="nav-link">{t('nav.posts')}</a>
+          <a href={getRelativeLocaleUrl(currentLocale, '/tags')} class="nav-link">{t('nav.tags')}</a>
         </div>
         <LanguageSwitcher
           currentLang={currentLocale}
@@ -78,11 +78,42 @@ const getTargetUrl = (targetLang: Language): string => {
         />
       </nav>
     </header>
-    <main class="max-w-screen-xl mx-auto px-8 py-8 min-h-[calc(100vh-200px)]">
+    <main class="max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8 py-8 min-h-[calc(100vh-200px)]">
       <slot />
     </main>
-    <footer class="bg-gray-100 px-8 py-8 text-center text-gray-500 text-sm mt-16">
-      <p>&copy; {new Date().getFullYear()} EasyDiagrams. Content licensed under CC BY-SA 4.0, Code under MIT.</p>
+    <footer class="bg-bg-primary border-t border-border-secondary px-4 md:px-6 lg:px-8 py-8 text-center mt-16">
+      <p class="text-text-secondary text-sm">&copy; {new Date().getFullYear()} EasyDiagrams. Content licensed under CC BY-SA 4.0, Code under MIT.</p>
     </footer>
   </body>
 </html>
+
+<style>
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    background-color: var(--color-primary-yellow);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+
+  .logo-text {
+    color: var(--color-primary-orange);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-link {
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    transition: color var(--duration-fast) var(--ease-in-out);
+  }
+
+  .nav-link:hover {
+    color: var(--color-primary-cyan);
+  }
+</style>
