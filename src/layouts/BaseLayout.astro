@@ -50,7 +50,9 @@ const pathWithoutLocale = getPathWithoutLocale(Astro.url.pathname, currentLocale
   <body class="font-sans leading-normal text-gray-800 m-0 p-0">
     <header class="bg-gray-800 text-white px-8 py-4 shadow-md">
       <nav class="max-w-screen-xl mx-auto flex justify-between items-center gap-8">
-        <a href={getRelativeLocaleUrl(currentLocale, '/')} class="text-2xl font-bold text-white no-underline">EasyDiagrams</a>
+        <a href={getRelativeLocaleUrl(currentLocale, '/')} class="flex items-center text-white no-underline">
+          <img src="/logo.svg" alt="EasyDiagrams" class="h-12" />
+        </a>
         <div class="flex gap-6 flex-1">
           <a href={getRelativeLocaleUrl(currentLocale, '/')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.home')}</a>
           <a href={getRelativeLocaleUrl(currentLocale, '/posts')} class="text-white no-underline transition-opacity hover:opacity-80">{t('nav.posts')}</a>
