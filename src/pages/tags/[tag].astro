@@ -4,34 +4,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { useTranslations } from '../../utils/i18n';
 
 export async function getStaticPaths() {
-  const languages = ['en', 'zh', 'ja'];
-  const paths: any[] = [];
+  const lang = 'en';
+  const allPosts = await getCollection('posts', ({ slug }) => {
+    return slug.startsWith(`${lang}/`);
+  });
 
-  for (const lang of languages) {
-    const allPosts = await getCollection('posts', ({ slug }) => {
-      return slug.startsWith(`${lang}/`);
-    });
+  const uniqueTags = new Set<string>();
+  allPosts.forEach((post) => {
+    post.data.tags.forEach((tag) => uniqueTags.add(tag));
+  });
 
-    const uniqueTags = new Set<string>();
-    allPosts.forEach((post) => {
-      post.data.tags.forEach((tag) => uniqueTags.add(tag));
-    });
-
-    Array.from(uniqueTags).forEach((tag) => {
-      const filteredPosts = allPosts.filter((post) =>
-        post.data.tags.includes(tag)
-      );
-      paths.push({
-        params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
-        props: { tag, posts: filteredPosts, lang },
-      });
-    });
-  }
-
-  return paths;
+  return Array.from(uniqueTags).map((tag) => {
+    const filteredPosts = allPosts.filter((post) =>
+      post.data.tags.includes(tag)
+    );
+    return {
+      params: { tag: tag.toLowerCase().replace(/\s+/g, '-') },
+      props: { tag, posts: filteredPosts },
+    };
+  });
 }
 
-const { tag, posts, lang } = Astro.props;
+const { tag, posts } = Astro.props;
+const lang = 'en';
 const t = useTranslations(lang);
 
 // Sort by date, most recent first

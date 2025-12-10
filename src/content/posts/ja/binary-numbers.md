@@ -3,7 +3,7 @@ title: '二進数：コンピュータの言語'
 description: 'コンピュータが二進数を使用して情報を表現・処理する方法の理解'
 pubDate: 2025-01-20
 tags: ['Computer Science', 'Fundamentals', 'Mathematics']
-featured: false
+featured: true
 ---
 
 # 二進数：コンピュータの言語
