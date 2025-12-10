@@ -47,28 +47,26 @@ const recentPosts = allPosts
         <h2>{t('home.featured')}</h2>
         <div class="posts-grid">
           {featuredPosts.map((post) => (
-            <article class="post-card featured-card">
-              {post.data.heroImage && (
-                <img
-                  src={post.data.heroImage}
-                  alt={post.data.title}
-                  class="hero-image"
-                />
-              )}
-              <div class="post-content">
-                <h3>
-                  <a href={`/posts/${post.slug}`}>
-                    {post.data.title}
-                  </a>
-                </h3>
-                <p class="description">{post.data.description}</p>
-                <div class="tags">
-                  {post.data.tags.slice(0, 3).map((tag) => (
-                    <span class="tag">{tag}</span>
-                  ))}
+            <a href={`/posts/${post.slug}`} class="post-card-link">
+              <article class="post-card featured-card">
+                {post.data.heroImage && (
+                  <img
+                    src={post.data.heroImage}
+                    alt={post.data.title}
+                    class="hero-image"
+                  />
+                )}
+                <div class="post-content">
+                  <h3>{post.data.title}</h3>
+                  <p class="description">{post.data.description}</p>
+                  <div class="tags">
+                    {post.data.tags.slice(0, 3).map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </article>
+              </article>
+            </a>
           ))}
         </div>
         <div class="view-all">
@@ -83,26 +81,19 @@ const recentPosts = allPosts
       <h2>{t('home.recent')}</h2>
       <div class="posts-grid">
         {recentPosts.map((post) => (
-          <article class="post-card">
-            <div class="post-content">
-              <h3>
-                <a href={`/posts/${post.slug}`}>
-                  {post.data.title}
-                </a>
-              </h3>
-              <p class="description">{post.data.description}</p>
-              <div class="meta">
-                <time datetime={post.data.pubDate.toISOString()}>
-                  {post.data.pubDate.toLocaleDateString(lang)}
-                </time>
+          <a href={`/posts/${post.slug}`} class="post-card-link">
+            <article class="post-card">
+              <div class="post-content">
+                <h3>{post.data.title}</h3>
+                <p class="description">{post.data.description}</p>
                 <div class="tags">
-                  {post.data.tags.slice(0, 2).map((tag) => (
+                  {post.data.tags.slice(0, 3).map((tag) => (
                     <span class="tag">{tag}</span>
                   ))}
                 </div>
               </div>
-            </div>
-          </article>
+            </article>
+          </a>
         ))}
       </div>
       <div class="view-all">
@@ -323,6 +314,12 @@ const recentPosts = allPosts
     }
   }
 
+  .post-card-link {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+  }
+
   .post-card {
     background: var(--color-bg-primary);
     border-radius: var(--radius-lg);
@@ -330,9 +327,10 @@ const recentPosts = allPosts
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     transition: all var(--duration-normal) var(--ease-in-out);
+    height: 100%;
   }
 
-  .post-card:hover {
+  .post-card-link:hover .post-card {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
   }
@@ -356,15 +354,11 @@ const recentPosts = allPosts
     margin-bottom: var(--spacing-3);
     font-weight: var(--font-weight-semibold);
     line-height: var(--line-height-tight);
-  }
-
-  h3 a {
     color: var(--color-text-primary);
-    text-decoration: none;
     transition: color var(--duration-fast) var(--ease-in-out);
   }
 
-  h3 a:hover {
+  .post-card-link:hover h3 {
     color: var(--color-primary-cyan);
   }
 
@@ -373,19 +367,6 @@ const recentPosts = allPosts
     margin-bottom: var(--spacing-4);
     line-height: var(--line-height-normal);
     font-size: var(--font-size-base);
-  }
-
-  .meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: var(--font-size-sm);
-    flex-wrap: wrap;
-    gap: var(--spacing-2);
-  }
-
-  time {
-    color: var(--color-text-light);
   }
 
   .tags {
