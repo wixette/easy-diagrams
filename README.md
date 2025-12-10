@@ -1,4 +1,4 @@
-# easy-diagrams
+# EasyDiagrams - How We Think, Explained Visually
 
 Source code for easydiagrams.com - a non-profit educational website dedicated to visualizing fundamental concepts through diagrams and videos.
 
@@ -13,6 +13,11 @@ This site hosts high-quality diagrams and educational content covering:
 - Computer science fundamentals
 - Artificial intelligence principles
 - And more...
+
+## Slogan and subheading
+
+- Slogan: How We Think, Explained Visually.
+- Subheading: Fundamental ideas revealed through simple diagrams and short animations. A non-profit project. No long texts. Just clear thinking.
 
 ## Usage
 

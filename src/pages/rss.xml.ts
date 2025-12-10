@@ -12,7 +12,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: 'EasyDiagrams',
-    description: 'Visualizing fundamental concepts through diagrams and videos',
+    description: 'Fundamental ideas revealed through simple diagrams and short animations. A non-profit project. No long texts. Just clear thinking.',
     site: context.site || 'https://easydiagrams.com',
     items: sortedPosts.map((post) => ({
       title: post.data.title,
